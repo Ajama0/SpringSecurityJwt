@@ -14,7 +14,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-
+        private final JwtService jwtService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -28,6 +28,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
          */
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
+        final String userEmail;
         //now we access the value associated to the authorization part of the header, which is the token
         if (authHeader == null || !authHeader.startsWith("Bearer")) {
             /**
@@ -41,6 +42,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         //if the jwt is present and is valid, we can now access the token
         //to access the token, we need to start from the 7th index in which it removes the word bearer
         jwt = authHeader.substring(7);
+        //extract the payload information (subject-username) from the jwt itself
+        userEmail = jwtService.extractUserNames(jwt);
+
 
 
         }
