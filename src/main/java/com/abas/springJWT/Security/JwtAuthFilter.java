@@ -5,8 +5,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -56,10 +58,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (userEmail!=null && SecurityContextHolder.getContext().getAuthentication()==null){
             //we will provide the user with an authentication object by checking the user exists in the db
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
-            if (jwtService.isTokenValid(jwt, userDetails))
+            if (jwtService.isTokenValid(jwt, userDetails)){
+                //if the user is valid and the token is valid
+                //we create an authentication object in order we can set and update the security context holder
+                UsernamePasswordAuthenticationToken authObj = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
 
+                //essentially we are saying here that the auth object is associated to this request
+                authObj.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                //set the context to the authentication object that we got from the token
+                SecurityContextHolder.getContext().setAuthentication(authObj);
+            }
 
-
+            //pass the request and response to the next set of filters
+            filterChain.doFilter(request,response);
 
     }
 
