@@ -1,10 +1,12 @@
-package com.abas.springJWT.config;
+package com.abas.springJWT.Security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -15,6 +17,7 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
         private final JwtService jwtService;
+        private final CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -30,7 +33,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String jwt;
         final String userEmail;
         //now we access the value associated to the authorization part of the header, which is the token
-        if (authHeader == null || !authHeader.startsWith("Bearer")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             /**
              * allow for other operations to still continue with the request
              * what if the endpoint is public like sign up or login, and we threw an exception here?
@@ -45,9 +48,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         //extract the payload information (subject-username) from the jwt itself
         userEmail = jwtService.extractUserNames(jwt);
 
+        /**
+         * as every subsequent request we re-authenticate the user and set up the context
+         * we will check that the jwt includes a subject and the user is not authenticated
+         */
+
+        if (userEmail!=null && SecurityContextHolder.getContext().getAuthentication()==null){
+            //we will provide the user with an authentication object by checking the user exists in the db
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
+            if (jwtService.isTokenValid(jwt, userDetails))
 
 
-        }
+
+
+    }
 
 
 

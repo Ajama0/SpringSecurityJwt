@@ -1,4 +1,4 @@
-package com.abas.springJWT.config;
+package com.abas.springJWT.Security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -28,7 +28,10 @@ public class JwtService {
         return extractClaim(jwt, Claims::getSubject);
     }
 
-    //what if we want to generate
+    //what if we want to generate the token without adding the claims
+    public String generateToken(UserDetails userDetails ){
+        return generateToken(new HashMap<>(), userDetails);
+    }
 
     /**
      *
@@ -73,10 +76,24 @@ public class JwtService {
     }
 
 
-
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    //we need to check the tokens validity, by comparing the jwt subject to the subject of the user sending the request
+
+    public Boolean isTokenValid(String jwt, UserDetails userDetails){
+        final String extractedUsername = extractUserNames(jwt);
+        final String username = userDetails.getUsername();
+
+        return  extractedUsername.equals(username) && !isTokenExpired(jwt);
+    }
+
+    public Boolean isTokenExpired(String jwt){
+        Date expiration = extractClaim(jwt,Claims::getExpiration);
+        return expiration.before(new Date());
+
     }
 
 
