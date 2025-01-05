@@ -14,6 +14,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private UserRepository userRepository;
 
+    public CustomUserDetailsService(){}
     public CustomUserDetailsService(UserRepository userRepository){
         this.userRepository = userRepository;
     }
