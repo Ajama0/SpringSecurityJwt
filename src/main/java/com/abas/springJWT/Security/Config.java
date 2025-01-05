@@ -1,10 +1,12 @@
 package com.abas.springJWT.Security;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+@Configuration
+public class Config {
+
     /**
      * the authentication provider is what authenticates the user once we set up the auth object
      * the jwt only validates the token, and checks that the subject exists in the database
@@ -12,14 +14,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
      * setting supports to true allows jwtfilter to hand authentication over to the auth provider
      * this is because our custom auth provider will be used
      */
-    @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-    }
+    @Bean
+    public AuthenticationProvider authenticationProvider(){
 
-    @Override
-    public boolean supports(Class<?> authentication) {
-        //means our authentication provider can handle any type of authentication object
-        return true;
     }
 }
