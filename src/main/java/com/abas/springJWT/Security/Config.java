@@ -1,29 +1,29 @@
 package com.abas.springJWT.Security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
+@RequiredArgsConstructor
 public class Config {
 
 
     /**
-     * create another bean at method level to return an instance of our userdetailservice implementation
-     * the method will be used for the authenticaiton provider to validate our user in the db
-     * the authprovider internally calls the loadUserByUsername()
+     *as the set userdetailsservice requires a instance of customuserdetails service
+     * we do not create another bean of userdetailsservice as it would lead to bean conflicts
+     * instead we can inject our ready made bean and pass that in
      *
      */
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-        return new CustomUserDetailsService();
-    }
-
+   private final CustomUserDetailsService customUserDetailsService;
 
 
     /**
@@ -39,11 +39,15 @@ public class Config {
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setUserDetailsService(customUserDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
 
 
-
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 
 
