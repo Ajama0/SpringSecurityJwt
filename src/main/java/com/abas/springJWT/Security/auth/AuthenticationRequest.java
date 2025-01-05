@@ -1,4 +1,4 @@
-package com.abas.springJWT.Security;
+package com.abas.springJWT.Security.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -44,13 +44,19 @@ public class Config {
         return authProvider;
     }
 
-
+    /**
+     *returns an instance of type authentication manager with a providerManager implementation
+     * essentially a providerManager instance, however we can only call the functions in the interface
+     * the method gets invoked and the return type of the method gets used as a singleton bean
+     * this bean which is an impl of provider manager can be used.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
 
+    //returns
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();

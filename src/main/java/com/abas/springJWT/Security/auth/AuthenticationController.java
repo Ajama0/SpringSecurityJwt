@@ -1,11 +1,9 @@
-package com.abas.springJWT.Security.Controller;
+package com.abas.springJWT.Security.auth;
 
 
-import com.abas.springJWT.Security.AuthResponse;
-import com.abas.springJWT.Security.AuthenticationRequest;
-import com.abas.springJWT.Security.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,12 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/Auth")
-public class Authentication {
+public class AuthenticationController {
 
+    private final AuthenticationService authenticationService;
     @PostMapping(path = "/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request){
 
-        return new ResponseEntity<>(new AuthResponse(token),HttpStatus.CREATED);
+        return ResponseEntity.ok(authenticationService.register(request));
 
     }
 
@@ -29,6 +28,7 @@ public class Authentication {
 
     @PostMapping(path = "/authenticate")
     public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthenticationRequest request){
+        return ResponseEntity.ok(authenticationService.authenticate(request));
 
 
 

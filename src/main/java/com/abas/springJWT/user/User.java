@@ -33,6 +33,11 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    public User(String firstname, String lastname, String email){
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
