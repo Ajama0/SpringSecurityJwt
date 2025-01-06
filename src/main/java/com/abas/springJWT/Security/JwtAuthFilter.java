@@ -42,6 +42,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
              * this would mean no other filter checks are done, Cors filter checks etc
              */
             filterChain.doFilter(request, response);
+            return;
         }
 
         //if the jwt is present and is valid, we can now access the token

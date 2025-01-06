@@ -27,9 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
          * other methods like getFirstName would mean we need to cast the object to a user object
          */
 
-        UserDetails findUser = userRepository.findByEmail(username)
+        return userRepository.findByEmail(username)
                 .orElseThrow(()-> new UsernameNotFoundException("user does not exist"));
-
-        return findUser;
     }
 }

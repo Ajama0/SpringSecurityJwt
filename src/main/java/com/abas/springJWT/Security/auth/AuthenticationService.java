@@ -12,8 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
 
 
 @Service
@@ -48,6 +46,7 @@ public class AuthenticationService {
 
      */
     public AuthResponse authenticate(AuthenticationRequest request) {
+        //this trhows an exception if authenticate fails
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),
                 request.getPassword()));
 
@@ -55,7 +54,8 @@ public class AuthenticationService {
         UserDetails user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(()-> new UsernameNotFoundException("user does not exist"));
         //we generate a token for the user and use the email to set as the claims subject
-        return new AuthResponse(jwtService.generateToken(user));
+        String jwt = jwtService.generateToken(user);
+        return new AuthResponse(jwt);
 
     }
 }

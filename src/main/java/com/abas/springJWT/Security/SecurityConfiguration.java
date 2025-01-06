@@ -40,7 +40,7 @@ public class SecurityConfiguration {
          */
         http.csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(auth-> auth
-                        .requestMatchers("/login").
+                        .requestMatchers("/api/v1/Auth/**").
                         permitAll()
                         .anyRequest().
                         authenticated()
