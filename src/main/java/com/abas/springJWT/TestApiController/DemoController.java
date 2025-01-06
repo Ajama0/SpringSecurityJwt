@@ -1,4 +1,4 @@
-package com.abas.springJWT.demo;
+package com.abas.springJWT.Controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
